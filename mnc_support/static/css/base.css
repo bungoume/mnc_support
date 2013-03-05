@@ -1,0 +1,17 @@
+body {
+  background: #eaeaea url('/static/img/white_wall.png');
+  color: #4d4d4d;
+  -webkit-font-smoothing: antialiased;
+  -moz-font-smoothing: antialiased;
+  -ms-font-smoothing: antialiased;
+  -o-font-smoothing: antialiased;
+  font-smoothing: antialiased;
+}
+
+@media only screen and (-webkit-min-device-pixel-ratio: 1.5), 
+only screen and (min-device-pixel-ratio: 1.5) {
+  body {
+    background-image: url('/static/img/white_wall2_@2X.jpg');
+    background-size: 150px 150px;
+ 　}
+}
