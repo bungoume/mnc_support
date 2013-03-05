@@ -1,0 +1,7 @@
+
+for Windows
+
+>virtualenv env
+>env\Scripts\activate.bat
+>pip install django
+>env\Lib\site-packages\django\bin\django-admin.py startproject xxx
