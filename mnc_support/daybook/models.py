@@ -85,6 +85,8 @@ class ClassInfo(models.Model):
     #max_user = 
     #detail = models.TextField(blank=True)
     #datetime = models.DateTimeField(auto_now=True)
+    def __unicode__(self):
+        return self.name + str(self.class_number).zfill(2)
 
 TIMING_CHOICES = (
     ('before_class','授業前'),

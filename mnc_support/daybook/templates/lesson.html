@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+
+{% block title%}{% endblock %}
+
+
+{% block style_block %}<!-- page-specific CSS -->
+
+{% endblock %}
+
+
+{% block head_script %}<!-- defer-incapable JS block -->{% endblock %}
+
+
+{% block header %}<!-- header -->{% endblock %}
+
+
+{% block content %}
+<h2>授業サポート日誌</h2>
+<h3>{{class_info.name}}</h3>
+<table id="select-class" class="table table-bordered table-striped table-condensed" style="background:#FFF">
+  <thead>
+    <tr>
+      <th>授業日</th>
+      <th>回数</th>
+      <th>コンテンツ</th>
+      <th>質問</th>
+      <th>更新日</th>
+    </tr>
+  </thead>
+  <tbody>
+{% for lesson in lessons %}
+    <tr>
+      <td>{{ lesson.date }}</td>
+      <td>{{ lesson.lesson_number }}</td>
+      <td>{% for content in lesson.contents.all %}{{ content.timing }}{{ content.detail }}<br>{% endfor %}</td>
+      <td>{% for question in lesson.questions.all %}{{ question.question }}:{{ question.response }}<br>{% endfor %}</td>
+      <td>{{ lesson.updated_at }}</td>
+    </td>
+{% endfor %}
+  </tbody>
+</table>
+
+<ul>
+  <li>{{ class_info.year }} {{class_info.term}}</li>
+  <li>{{class_info.weekday}} {{class_info.hour}}</li>
+  <li>{{class_info.name}} {{class_info.class_number}}</li>
+  <li>{{class_info.teacher}}</li>
+  <li>{{class_info.classroom}}</li>
+  <li>{{class_info.ta_support}}</li>
+</tr>
+{% endblock %}
+
+
+{% block footer %}<!-- footer -->{% endblock %}
+
+
+{% block tail_script %}<!-- defer-capable JS block -->{% endblock %}

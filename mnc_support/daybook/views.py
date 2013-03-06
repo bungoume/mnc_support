@@ -35,7 +35,7 @@ def showLesson(request, id):
         return HttpResponseNotFound(mimetype='application/json')
     #lessons = Lesson.objects.filter(class_data_id__exact=id)
     lessons = class_info.lesson_set.all()
-    return HttpResponse((lessons))
+    return render_to_response('lesson.html', {'lessons': lessons, 'class_info':class_info})
     json = serializers.serialize('json', class_info, ensure_ascii=False)
     return HttpResponse(json, mimetype='application/json')
 
