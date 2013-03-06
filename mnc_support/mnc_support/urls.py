@@ -16,4 +16,7 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
     (r'^daybook/$', 'daybook.views.index'),
     (r'^daybook/classList$', 'daybook.views.classList'),
+    (r'^daybook/lesson$', 'daybook.views.showLesson'),
+    (r'^daybook/lesson/(?P<id>\d+)/$', 'daybook.views.showLesson'),
+    (r'^daybook/classList/update$', 'daybook.views.updateClassList'),
 )

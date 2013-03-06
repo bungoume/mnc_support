@@ -1,0 +1,170 @@
+{% extends "base.html" %}
+
+
+{% block title%}{% endblock %}
+
+
+{% block style_block %}<!-- page-specific CSS -->
+{% endblock %}
+
+
+{% block head_script %}<!-- defer-incapable JS block -->{% endblock %}
+
+
+{% block content %}
+<div>
+  <h1>授業サポート日誌</h1>
+  <p class="lead">さあ、授業サポート日誌を書きましょう。</p>
+  <p><abbr title="スペースで区切ってアンド検索可能!">授業を検索</abbr>:
+    <input type="text" id="search" class="input-xxlarge search-query" placeholder="授業を検索"></p>
+</div>
+<div>
+  <table id="select-class" class="table table-bordered table-striped table-condensed" style="background:#FFF">
+    <thead>
+    <tr>
+      <th>年度/学期</th>
+      <th>曜日/時限</th>
+      <th>科目名</th>
+      <th>担当教員</th>
+      <th>教室</th>
+      <th>TA補助</th>
+      <th>アクション</th>
+    </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
+</div>
+
+<hr>
+
+<!-- Example row of columns -->
+<div class="row-fluid">
+  <div class="span4">
+    <h2>操作方法</h2>
+    <p>そのうち書きます。と書いておいて多分書きません。書きたい人が書いてください。</p>
+    <p><a class="btn" href="#">詳細へ &raquo;</a></p>
+ 　</div>
+　　<div class="span4">
+    <h2>なにか</h2>
+    <p>ここの欄にもなにか文章が有ったら方がそれっぽく見えそうだったので書こうと思ったけど、何も思いつきませんでした。</p>
+    <p><a class="btn" href="#">View details &raquo;</a></p>
+  </div>
+  <div class="span4">
+    <h2>問題報告</h2>
+    <p>シラバスと内容が食い違っていたり、表示がおかしい、検索に失敗するなど問題を見つけた場合は、下記からコンタクトをお願いします。</p>
+    <p><a class="btn" href="#">コンタクト &raquo;</a></p>
+  </div>
+</div>
+{% endblock %}
+
+
+{% block footer %}<!-- footer -->{% endblock %}
+
+
+{% block tail_script %}<!-- defer-capable JS block -->
+<script>
+$(function(){
+  var w = ["日","月","火","水","木","金","土"];
+  var dataCache;
+  var list = _.template('\
+      <tr> \
+        <td><%= year %> <%= term %></td> \
+        <td><%= weekday %> <%= hour %></td> \
+        <td><%= name %> <%= class_number %></td> \
+        <td><%= teacher %></td> \
+        <td><%= classroom %></td> \
+        <td><%= ta_support %></td> \
+        <td><a class="btn btn-success" href="lesson/<%= id %>/" target="_blank">日誌</a> \
+            <a class="btn btn-info" href="<%= syllabus_url %>" target="_blank">シラバス</a> </td> \
+      </tr> \
+      ');
+  $.get("/daybook/classList", function(data){dataCache = data;setTbody(data);});
+
+  function setDefaultSearchValue(){
+    var now = new Date;
+    var month = now.getMonth();
+    var year = now.getFullYear();
+    if(month<4)year -= 1;
+    var term;
+    if(month && month <2){//2,3月
+      term = '春季集中';
+    }else if(month <7){//4,5,6,7月
+      term = '前期';
+    }else if(month <9){//8,9月
+      term = '夏期集中';
+    }else{//10,11,12,1月
+      term = '後期'
+    }
+
+    var time = now.getHours() * 60 + now.getMinutes();
+    var hour = 0;
+    //次の時間の5分前まで
+    if(time < 8*60){
+      hour = 0;
+    }else if(time < 10*60+35){
+      hour = 1;
+    }else if(time < 12*60+55){
+      hour = 2;
+    }else if(time < 14*60+40){
+      hour = 3;
+    }else if(time < 16*60+25){
+      hour = 4;
+    }else if(time < 18*60+10){
+      hour = 5;
+    }
+
+    var searchValue = year + ' ' + term + ' ' + w[now.getDay()] + '曜';
+    if(hour) searchValue+= ' ' + hour + '限';
+    $('#search').val(searchValue).trigger('input');
+  }
+
+  function setTbody(data){
+    var html = _.reduce(data, function(memo, data){
+      data.fields.id = data.pk;
+      return memo + list(data.fields); 
+    }, '');
+    $('#select-class tbody').html(html);
+
+    setDefaultSearchValue();
+  }
+
+  function include(fields, needle){
+    if (needle === '') return true;
+    if (fields == null) return false;
+    var str = String(_.values(fields));
+    var words = needle.split(' ');
+    return  _.reduce(words, function(memo, word){
+      var localStr = str;
+      if(word.indexOf('曜') != -1){
+        localStr = String(fields.weekday);
+        word = word.slice(0,2);
+      }else if(word.match(/[号教]室|ルーム|号館/)){
+        localStr = String(fields.classroom);
+      }else if(word.match(/[1-7１-７]限|時限/)){
+        localStr = String(fields.hour);
+        word = word.slice(0,1);
+      }
+      if(localStr.indexOf(word) == -1)
+        return false;
+      else 
+        return memo;
+    }, true);
+  }
+
+  $('#search').on('input', function(event){
+    var data = dataCache;
+    var html = _.reduce(data, function(memo, data){
+      if(include(data.fields,event.target.value)){
+        return memo + list(data.fields);
+      }
+      else {
+        return memo;
+      }
+    }, '');
+    $('#select-class tbody').html(html);
+  });
+
+});
+</script>
+{% endblock %}

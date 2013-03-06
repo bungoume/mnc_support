@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>{% block title%}{% endblock %}</title>
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+  <style type="text/css">
+    body {
+      padding-top: 60px;
+      padding-bottom: 40px;
+    }
+  </style>
+  <link rel="stylesheet" href="/static/css/bootstrap-responsive.min.css">
+  <link rel="stylesheet" href="/static/css/base.css">
+  <link rel="shortcut icon" href="/static/img/favicon.ico" />
+  {% block style_block %}<!-- page-specific CSS -->{% endblock %}
+  {% block head_script %}<!-- defer-incapable JS block -->{% endblock %}
+  <!--[if lt IE 9]>
+    <script src="/static/js/vendor/html5shiv.js"></script>
+  <![endif]-->
+</head>
+
+<body>
+<!--[if lt IE 7]>
+<p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+<![endif]-->
+
+<div class="container">
+
+  {% block header %}<!-- header -->
+
+  {% endblock %}
+  
+  {% block content %}{% endblock %}
+
+  <hr>
+
+  <footer>
+    {% include 'footer.html' %}
+    {% block footer %}<!-- footer -->{% endblock %}
+  </footer>
+
+</div>
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="/static/js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
+
+<script src="https://www.google.com/jsapi"></script>
+<script src="/static/js/vendor/bootstrap.min.js"></script>
+<script src="/static/js/vendor/underscore-min.js"></script>
+
+{% block tail_script %}<!-- defer-capable JS block -->{% endblock %}
+
+</body>
+</html>
