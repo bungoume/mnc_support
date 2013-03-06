@@ -26,6 +26,7 @@ WEEKDAY_CHOICES = (
 
 #start-stop
 HOUR_CHOICES = (
+    (0, '未設定'),
     (11,'1限'),
     (22,'2限'),
     (33,'3限'),
@@ -77,6 +78,7 @@ class ClassInfo(models.Model):
     ta_support = models.CharField(choices=TA_SUPPORT_CHOICES, max_length=10)
     class_key = models.CharField(max_length=12)
     syllabus_url = models.URLField()
+    keyword = models.CharField(max_length=200, blank=True)
     #same_class
     #
     #配当年次 単位 定員 ACPA 備考
@@ -114,7 +116,7 @@ class Document(models.Model):
 class Lesson(models.Model):
     class_data = models.ForeignKey(ClassInfo)
     date = models.DateField()
-    hour = models.IntegerField(choices=HOUR_CHOICES, blank=True)
+    hour = models.IntegerField(choices=HOUR_CHOICES, blank=True, default=0)
     lesson_number = models.IntegerField()
     #user = models.ForeignKey(User)
     attendance_check = models.BooleanField()
@@ -129,8 +131,11 @@ class Lesson(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-
+    def __unicode__(self):
+        return self.class_data.name + str(self.lesson_number).zfill(2)
 
 admin.site.register(ClassInfo)
 admin.site.register(Lesson)
 admin.site.register(Action)
+admin.site.register(Quesiton)
+admin.site.register(Document)
