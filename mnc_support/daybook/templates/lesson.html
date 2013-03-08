@@ -17,7 +17,9 @@
 
 {% block content %}
 <h1>{{class_info.name}}</h1>
-<button class="btn btn-success">日誌を書く(´・ω・｀)</button>
+<a class="btn btn-success">日誌を書く</a>
+<a class="btn btn-info" href="{{ class_info.syllabus_url }}" target="_blank">シラバス</a>
+<a class="btn btn-warning" href="/admin/daybook/classinfo/{{class_info.id}}/" target="_blank">編集</a>
 <table id="select-class" class="table table-bordered table-striped table-condensed" style="background:#FFF">
   <caption><strong>授業詳細</strong></caption>
   <thead>
@@ -150,10 +152,6 @@
 {% endfor %}
 </div>
 </div>
-
-
-<button type="button" class="btn btn-danger" data-toggle="collapse" data-target="#333">simple collapsible</button>
- <div id="333" class="collapse"> … </div>
 
 {% endblock %}
 

@@ -65,7 +65,7 @@ class ClassInfo(models.Model):
     #科目名 (旧科目名) クラス番号 教員名
     name = models.CharField(max_length=30)
     other_name = models.CharField(max_length=30, blank=True)
-    class_number = models.IntegerField(blank=True)
+    class_number = models.IntegerField()
     teacher = models.CharField(max_length=30)
     #年度 学期
     year = models.IntegerField('開講年度')
