@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 
-{% block title%}{% endblock %}
+{% block title%}授業サポート日誌{% endblock %}
 
 
 {% block style_block %}<!-- page-specific CSS -->
@@ -12,11 +12,47 @@
 
 
 {% block content %}
+<div class="navbar  navbar-inverse navbar-fixed-top"><div class="navbar-inner"><div class="container">
+</div></div></div>
+
 <div>
   <h1>授業サポート日誌</h1>
   <p class="lead">さあ、授業サポート日誌を書きましょう。</p>
-  <p><abbr title="スペースで区切ってアンド検索可能!">授業を検索</abbr>:
-    <input type="text" id="search" class="input-xxlarge search-query" placeholder="授業を検索"></p>
+  <div class="navbar"><div class="navbar-inner"><div class="container">
+  <form class="navbar-search">
+    <abbr title="スペースで区切ってアンド検索可能!">授業を検索</abbr>:
+      <input type="text" id="search" class="input-xxlarge search-query" placeholder="授業を検索">
+  </form>
+  <div id="search-by">
+    <div class="btn-group">
+      <button class="btn dropdown-toggle" data-toggle="dropdown">
+        曜日<span class="caret"></span>
+      </button>
+      <ul class="dropdown-menu">
+        <li><a href="#">月曜</a></li>
+        <li><a href="#">火曜</a></li>
+        <li><a href="#">水曜</a></li>
+        <li><a href="#">木曜</a></li>
+        <li><a href="#">金曜</a></li>
+        <li><a href="#">土曜</a></li>
+      </ul>
+    </div>
+     <div class="btn-group">
+      <button class="btn dropdown-toggle" data-toggle="dropdown">
+        時限<span class="caret"></span>
+      </button>
+      <ul class="dropdown-menu">
+        <li><a href="#">1限目</a></li>
+        <li><a href="#">2限目</a></li>
+        <li><a href="#">3限目</a></li>
+        <li><a href="#">4限目</a></li>
+        <li><a href="#">5限目</a></li>
+        <li><a href="#">6限目</a></li>
+        <li><a href="#">7限目</a></li>
+      </ul>
+    </div>
+  </div>
+  </div></div></div>
 </div>
 <div>
   <table id="select-class" class="table table-bordered table-striped table-condensed" style="background:#FFF">
@@ -35,6 +71,10 @@
     </tbody>
   </table>
 </div>
+<div class="row">
+  <div class="span2 offset10">
+<p><a class="btn btn-primary" href="/admin/daybook/classinfo/add/" target="_blank">新規追加</a></p></div>
+</div>
 
 <hr>
 
@@ -48,7 +88,8 @@
 　　<div class="span4">
     <h2>なにか</h2>
     <p>ここの欄にもなにか文章が有ったら方がそれっぽく見えそうだったので書こうと思ったけど、何も思いつきませんでした。</p>
-    <p><a class="btn" href="#">View details &raquo;</a></p>
+    <p><a href="#" id="popover" class="btn" data-toggle="popover" title="何押してるの!" data-content="ちょと、押さないでよ(//ω//)" 
+      data-original-title="ここ何？">View details &raquo;</a></p>
   </div>
   <div class="span4">
     <h2>問題報告</h2>
@@ -76,7 +117,9 @@ $(function(){
         <td><%= classroom %></td> \
         <td><%= ta_support %></td> \
         <td><a class="btn btn-success" href="lesson/<%= id %>/" target="_blank">日誌</a> \
-            <a class="btn btn-info" href="<%= syllabus_url %>" target="_blank">シラバス</a> </td> \
+            <a class="btn btn-info" href="<%= syllabus_url %>" target="_blank">シラバス</a> \
+            <a class="btn btn-warning" href="/admin/daybook/classinfo/<%= id %>/" target="_blank">編集</a> \
+            </td> \
       </tr> \
       ');
   $.get("/daybook/classList", function(data){dataCache = data;setTbody(data);});
@@ -154,8 +197,11 @@ $(function(){
 
   $('#search').on('input', function(event){
     var data = dataCache;
+    var val = event.target.value;
+    val = val.replace(/[０-９]/g, function(a){return "０１２３４５６７８９".indexOf(a);});//全角数字→半角
+    val = val.replace(/[\　]/g, " ");
     var html = _.reduce(data, function(memo, data){
-      if(include(data.fields,event.target.value)){
+      if(include(data.fields, val)){
         return memo + list(data.fields);
       }
       else {
@@ -165,6 +211,30 @@ $(function(){
     $('#select-class tbody').html(html);
   });
 
+  $("#popover").popover().on('click',function(event){event.preventDefault();});
+
+  $("#search-by li a").on('click',function(event){
+    var word = event.target.textContent;
+    var type;
+    if(word.indexOf('曜') !==-1) {
+      type = '曜';
+    } else if(word.indexOf('限') !==-1) {
+      type = '限';
+      word = word.replace(/時|目/,'');
+    }
+    var val = $('#search').val();
+
+    if(val.indexOf(type) !==-1){
+      val = _.chain(val.split(' '))
+        .filter(function(v) {return v.indexOf(type)==-1 && v.length<5 })
+        .reduce(function(memo, v){ return memo + v + ' '}, '')
+        .value() + word;
+    } else {
+      val = val.replace(/\s+$/g, "") + ' ' + word;
+    }
+    $('#search').val(val).trigger('input');
+    event.preventDefault();
+  });
 });
 </script>
 {% endblock %}
