@@ -9,19 +9,20 @@ def index(request):
     return render_to_response('main.html')
 
 
+def setData(data):
+    data.term = data.get_term_display()
+    data.hour = data.get_hour_display()
+    data.classroom = data.get_classroom_display()
+    data.weekday = data.get_weekday_display()
+    data.class_number = str(data.class_number).zfill(2)
+    data.ta_support = data.get_ta_support_display()
+    return data
+
 def classList(request):
     try:
         class_info = ClassInfo.objects.all()
     except ClassInfo.DoesNotExist:
         return HttpResponseNotFound(mimetype='application/json')
-    def setData(data):
-        data.term = data.get_term_display()
-        data.hour = data.get_hour_display()
-        data.classroom = data.get_classroom_display()
-        data.weekday = data.get_weekday_display()
-        data.class_number = str(data.class_number).zfill(2)
-        data.ta_support = data.get_ta_support_display()
-        return data
 
     class_info = map(setData, class_info)
     json = serializers.serialize('json', class_info, ensure_ascii=False)
@@ -35,7 +36,9 @@ def showLesson(request, id):
         return HttpResponseNotFound(mimetype='application/json')
     #lessons = Lesson.objects.filter(class_data_id__exact=id)
     lessons = class_info.lesson_set.all()
+    class_info = setData(class_info)
     return render_to_response('lesson.html', {'lessons': lessons, 'class_info':class_info})
+    
     json = serializers.serialize('json', class_info, ensure_ascii=False)
     return HttpResponse(json, mimetype='application/json')
 

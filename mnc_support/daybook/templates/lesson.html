@@ -16,43 +16,155 @@
 
 
 {% block content %}
-<h2>授業サポート日誌</h2>
-<h3>{{class_info.name}}</h3>
+<h1>{{class_info.name}}</h1>
+<button class="btn btn-success">日誌を書く(´・ω・｀)</button>
 <table id="select-class" class="table table-bordered table-striped table-condensed" style="background:#FFF">
+  <caption><strong>授業詳細</strong></caption>
   <thead>
     <tr>
-      <th>授業日</th>
-      <th>回数</th>
-      <th>コンテンツ</th>
-      <th>質問</th>
-      <th>更新日</th>
+      <th>年度/学期</th>
+      <th>曜日/時限</th>
+      <th>科目名</th>
+      <th>担当教員</th>
+      <th>教室</th>
+      <th>TA補助</th>
     </tr>
   </thead>
   <tbody>
-{% for lesson in lessons %}
-    <tr>
-      <td>{{ lesson.date }}</td>
-      <td>{{ lesson.lesson_number }}</td>
-      <td>{% for content in lesson.contents.all %}{{ content.timing }}{{ content.detail }}<br>{% endfor %}</td>
-      <td>{% for question in lesson.questions.all %}{{ question.question }}:{{ question.response }}<br>{% endfor %}</td>
-      <td>{{ lesson.updated_at }}</td>
-    </td>
-{% endfor %}
+  <tr>
+    <td>{{class_info.year}} {{class_info.term}}</td>
+    <td>{{class_info.weekday}} {{class_info.hour}}</td>
+    <td>{{class_info.name}} {{class_info.class_number}}</td>
+    <td>{{class_info.teacher}}</td>
+    <td>{{class_info.classroom}}</td>
+    <td>{{class_info.ta_support}}</td>
+  </tr>
   </tbody>
 </table>
 
-<ul>
-  <li>{{ class_info.year }} {{class_info.term}}</li>
-  <li>{{class_info.weekday}} {{class_info.hour}}</li>
-  <li>{{class_info.name}} {{class_info.class_number}}</li>
-  <li>{{class_info.teacher}}</li>
-  <li>{{class_info.classroom}}</li>
-  <li>{{class_info.ta_support}}</li>
-</tr>
+
+<h2>授業サポート日誌</h2>
+<table id="select-class" class="table table-bordered table-striped table-condensed" style="background:#FFF">
+  <thead>
+    <tr>
+      <th>項目</th>
+      <th>内容</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>課題配布</td>
+      <td>有</td>
+    </tr>
+    <tr>
+      <td>出席対応</td>
+      <td>有</td>
+    </tr>
+    <tr>
+      <td>授業前</td>
+      <td><ul>
+        <li>出席カード配布</li>
+        <li>教卓横に資料を置く</li>
+        <li>教卓PCの電源を入れておく</li>
+      </ul></td>
+    </tr>
+    <tr>
+      <td>授業中</td>
+      <td><ul>
+        <li>30分後に出席カードを回収</li>
+        <li>遅刻者には出席カードに遅刻と記載して渡す</li>
+        <li>遅刻者に資料を配布</li>
+        <li>先生は授業の進行を優先されるので、わかっていない受講者のフォローを重点的に行う</li>
+      </ul></td>
+    </tr>
+    <tr>
+      <td>授業後</td>
+      <td><ul>
+        <li>出席カードを先生に渡す</li>
+        <li>余った資料をMNC事務所に渡す</li>
+        <li>PCをシャットダウンする。黒板を消しておく(4/18 追加)</li>
+      </ul></td>
+    </tr>
+    <tr>
+      <td>引き継ぎ事項</td>
+      <td>次回授業は○○をします。</td>
+    </tr>
+    <tr>
+      <td>MNC事務所への連絡事項</td>
+      <td>来週(5/14)は休講です。</td>
+    </tr>
+    <tr>
+      <td>授業サポートの注意点</td>
+      <td><ul>
+        <li>積極的に受講者の質問を聞きだせるよう、実習時は巡回する。</li>
+        <li>Javaがわからないと受講者への質問に対応出来ない。</li>
+      </ul></td>
+    </tr>
+    <tr>
+      <td>先生のやり取り</td>
+      <td>次回からは10分前には来てほしいと言われた。(4/18)</td>
+    </tr>
+    <tr>
+      <td>その他特記事項</td>
+      <td>「もっと大きい教室にしてほしい」「受講者が多いのでTAを2人にしてほしい」と先生から言われた。</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>前回までの授業</h3>
+<div class="tabbable"> <!-- Only required for left/right tabs -->
+  <ul class="nav nav-tabs">
+{% for lesson in lessons %}
+    <li><a href="#tab{{ lesson.lesson_number }}" data-toggle="tab">Lesson {{ lesson.lesson_number }}</a></li>
+{% endfor %}
+  </ul>
+<div class="tab-content">
+{% for lesson in lessons %}
+  <div class="tab-pane" id="tab{{ lesson.lesson_number }}">
+    <table id="select-class" class="table table-bordered table-striped table-condensed" style="background:#FFF">
+      <thead><tr><th>項目</th><th>内容</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>授業日</td>
+          <td>{{ lesson.date }}</td>
+        </tr>
+        <tr>
+          <td>授業の内容</td>
+          <td>{% for content in lesson.contents.all %}{{ content.timing }}{{ content.detail }}<br>{% endfor %}</td>
+        </tr>
+        <tr>
+          <td>授業資料</td>
+          <td>{% for document in lesson.documents.all %}{{ document.name }}{{ document.file_data }}<br>{% endfor %}</td>
+        </tr>
+        <tr>
+          <td>受講者とのやりとり</td>
+          <td>{% for question in lesson.questions.all %}{{ question.question }}:{{ question.response }}<br>{% endfor %}</td>
+        </tr>
+        <tr>
+          <td>更新時刻</td>
+          <td>{{ lesson.updated_at }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+{% endfor %}
+</div>
+</div>
+
+
+<button type="button" class="btn btn-danger" data-toggle="collapse" data-target="#333">simple collapsible</button>
+ <div id="333" class="collapse"> … </div>
+
 {% endblock %}
 
 
 {% block footer %}<!-- footer -->{% endblock %}
 
 
-{% block tail_script %}<!-- defer-capable JS block -->{% endblock %}
+{% block tail_script %}<!-- defer-capable JS block -->
+<script>
+$(function(){
+
+});
+</script>
+{% endblock %}
