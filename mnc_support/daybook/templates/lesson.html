@@ -17,7 +17,7 @@
 
 {% block content %}
 <h1>{{class_info.name}}</h1>
-<a class="btn btn-success">日誌を書く</a>
+<a class="btn btn-success" href="">日誌を書く</a>
 <a class="btn btn-info" href="{{ class_info.syllabus_url }}" target="_blank">シラバス</a>
 <a class="btn btn-warning" href="/admin/daybook/classinfo/{{class_info.id}}/" target="_blank">編集</a>
 <table id="select-class" class="table table-bordered table-striped table-condensed" style="background:#FFF">
@@ -140,7 +140,19 @@
         </tr>
         <tr>
           <td>受講者とのやりとり</td>
-          <td>{% for question in lesson.questions.all %}{{ question.question }}:{{ question.response }}<br>{% endfor %}</td>
+          <td><dl>
+            {% for question in lesson.questions.all %}
+            <dt>{{ question.question }}</dt><dd>{{ question.response }}</dd>
+            {% endfor %}
+          </dl></td>
+        </tr>
+        <tr>
+          <td>資料の変更点</td>
+          <td>{% for content in lesson.contents.all %}{{ content.timing }}{{ content.detail }}<br>{% endfor %}</td>
+        </tr>
+        <tr>
+          <td>担当TA</td>
+          <td>佐藤 </td>
         </tr>
         <tr>
           <td>更新時刻</td>
